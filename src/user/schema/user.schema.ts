@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { type } from 'os';
 
 @Schema({ collection: 'users' })
 export class User {
