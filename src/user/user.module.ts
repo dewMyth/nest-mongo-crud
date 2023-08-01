@@ -17,5 +17,6 @@ import { UtilModule } from 'src/util/util.module';
   ],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

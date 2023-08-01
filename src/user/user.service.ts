@@ -120,6 +120,30 @@ export class UserService {
     }
   }
 
+  async findOneByEmail(email) {
+    this._logger.log(
+      `Started fetching user with email : ${JSON.stringify(email)}`,
+    );
+
+    const result = await this.userModel.findOne({ email: email });
+
+    if (result) {
+      this._logger.log(`User found : ${JSON.stringify(result)}`);
+      return {
+        status: 200,
+        message: 'User found',
+        data: result,
+      };
+    } else {
+      this._logger.log(`User not found`);
+      return {
+        status: 404,
+        message: 'User not found',
+        data: result,
+      };
+    }
+  }
+
   async update(id: number, updatedUser) {
     this._logger.log(`Started updating user with id : ${id}`);
     const result = await this.userModel.updateOne({ id: id }, updatedUser);
