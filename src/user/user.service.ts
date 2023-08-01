@@ -4,6 +4,7 @@ import { User } from './entities/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CustomLoggerService } from 'src/util/custom-logger.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -44,7 +45,24 @@ export class UserService {
     }
 
     this._logger.log('Started Creating user...');
-    const createdUser = new this.userModel(user);
+
+    // Hash password
+    this._logger.log('Started hashing password...');
+    if (!user.password) {
+      this._logger.log(`Password not provided`);
+      return {
+        status: 400,
+        message: 'Password not provided',
+      };
+    }
+
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+
+    const createdUser = new this.userModel({
+      ...user,
+      password: hashedPassword,
+    });
+
     const result = await createdUser.save();
     if (result) {
       this._logger.log(`User created successfully : ${JSON.stringify(result)}`);
