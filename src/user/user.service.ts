@@ -1,17 +1,18 @@
-import { Injectable, Logger } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CustomLoggerService } from 'src/util/custom-logger.service';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private _logger: Logger,
-    @InjectModel('User') private userModel: Model<User>,
-  ) {}
+  private _logger = new CustomLoggerService(UserService.name);
+
+  constructor(@InjectModel('User') private userModel: Model<User>) {}
 
   async create(user: User) {
-    this._logger.log(`User to be created : ${JSON.stringify(user)}`);
+    this._logger.log(`User to be created => ${user.email}`);
     this._logger.log('Started checking if user exists...');
 
     // Check by email
@@ -58,7 +59,7 @@ export class UserService {
   }
 
   async findAll() {
-    this._logger.log('Started fetching all users...');
+    this._logger.debug('Started fetching all users...');
     const result = await this.userModel.find().exec();
     if (result.length > 0) {
       this._logger.log(`${result.length} - Users fetched successfully`);

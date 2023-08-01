@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  Logger,
   Get,
   Param,
   Delete,
@@ -10,13 +9,13 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
+import { CustomLoggerService } from 'src/util/custom-logger.service';
 
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private _logger: Logger,
-  ) {}
+  private _logger = new CustomLoggerService(UserController.name);
+
+  constructor(private readonly userService: UserService) {}
 
   @Post('create')
   create(@Body() user: User) {
@@ -26,6 +25,7 @@ export class UserController {
 
   @Get('get-all')
   findAll() {
+    this._logger.log('Fetching all users...');
     return this.userService.findAll();
   }
 
